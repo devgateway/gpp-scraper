@@ -1,7 +1,7 @@
 {
-  "name": "gppscrapper",
+  "name": "gppscraper",
   "version": "1.0.0",
-  "description": "GPP Scrapper",
+  "description": "GPP Scraper",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
