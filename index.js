@@ -9,7 +9,7 @@ Utils.loadExternalConfiguration().then(function (data) {
   console.log(global.config);
   
   ScrappingService.run();
-  //ProcessingService.run();
+  // ProcessingService.run();
 }).catch(function (error) {
   console.log(error);
 });

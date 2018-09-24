@@ -1,8 +1,10 @@
-var MongoClient = require('mongodb').MongoClient;
-var Db = require('mongodb').Db;
-
+const MongoClient = require('mongodb').MongoClient;
 
 class dbUtils {
+  static url() {
+    return 'mongodb://' + global.config.MONGO_DB.host + ':' + global.config.MONGO_DB.port;
+  }
+  
   static async insertMany(collectionName, data) {
     let client;
     try {
@@ -15,10 +17,6 @@ class dbUtils {
       console.log(err.stack);
     }
     client.close();
-  }
-  
-  static url() {
-    return 'mongodb://' + global.config.MONGO_DB.host + ':' + global.config.MONGO_DB.port;
   }
   
   static async deleteAll(collectionName) {

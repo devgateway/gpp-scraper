@@ -1,5 +1,6 @@
 const {ajaxUtils} = require('./common/ajaxUtils');
 const {dbUtils} = require('./common/dbUtils');
+
 const promiseSerial = funcs =>
   funcs.reduce((promise, func) =>
       promise.then(result => func().then(Array.prototype.concat.bind(result))),
@@ -9,7 +10,7 @@ const promiseSerial = funcs =>
 class ScrappingService {
   static fetchData(step, page) {
     console.log('fetching ' + step + ', page ' + page);
-    const url = 'http://gpp.ppda.go.ug/api/v1/releases?page=' + page;
+    const url = 'http://gpp.ppda.go.ug/api/v1/releases?tag=' + step + '&page=' + page;
     return ajaxUtils.get(url, {});
     
   }
@@ -26,8 +27,10 @@ class ScrappingService {
       
       return response.data.pagination.last_page;
     }).catch(function (err) {
-      console.log('error: ' + step + ' , page ' + page);
+      console.log('error: ' + step + ' , page ' + page + ' - '
+        + 'http://gpp.ppda.go.ug/api/v1/releases?tag=' + step + '&page=' + page);
       console.log(err.response.data);
+      
       dbUtils.insertMany('errors', [{step: step, page: page, message: err.response.data.message}]);
     });
   }
@@ -51,21 +54,22 @@ class ScrappingService {
   
   static run() {
     this.cleanup();
-    this.fetch('procurements');
-    /*this.fetch('planning');
+    // this.fetch('procurements');
+    
+    this.fetch('planning');
     this.fetch('tender');
     this.fetch('award');
     this.fetch('contract');
-    this.fetch('implementation');*/
   }
   
   static cleanup() {
-    /*dbUtils.deleteAll('planning');
+    dbUtils.deleteAll('planning');
     dbUtils.deleteAll('tender');
-       dbUtils.deleteAll('award');
-       dbUtils.deleteAll('contract');
-       dbUtils.deleteAll('implementation');*/
-    dbUtils.deleteAll('procurements');
+    dbUtils.deleteAll('award');
+    dbUtils.deleteAll('contract');
+    
+    // dbUtils.deleteAll('procurements');
+    
     dbUtils.deleteAll('errors');
   }
 }

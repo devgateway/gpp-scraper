@@ -11,11 +11,6 @@ class ProcessingService {
     dbUtils.collectDistinct('tender', 'ocid');
     dbUtils.collectDistinct('award', 'ocid');
     dbUtils.collectDistinct('contract', 'ocid');
-    dbUtils.collectDistinct('implementation', 'ocid');
-  }
-  
-  static fetchAndMerge(ocid) {
-  
   }
 }
 
