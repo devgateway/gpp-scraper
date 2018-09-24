@@ -1,0 +1,13 @@
+# Ignore development specific files and directories.
+/.checkstyle
+/.project
+/.settings/
+/node_modules/
+/node/
+/npm-debug.log
+/org.eclipse.m2e.core.prefs
+/output/
+/target
+/webpack-test/bundle.js
+*.iml
+.idea/
