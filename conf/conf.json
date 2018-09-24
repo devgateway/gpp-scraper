@@ -1,7 +1,7 @@
 {
-   "MONGO_DB": {
-        "dbName": "gpp",
-        "host": "localhost",
-        "port": 27017        
-    }
+  "MONGO_DB": {
+    "dbName": "gpp",
+    "host": "localhost",
+    "port": 27017
+  }
 }
