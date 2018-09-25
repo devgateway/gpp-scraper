@@ -10,7 +10,13 @@ const promiseSerial = funcs =>
 class ScrappingService {
   static fetchData(step, page) {
     console.log('fetching ' + step + ', page ' + page);
-    const url = 'http://gpp.ppda.go.ug/api/v1/releases?tag=' + step + '&page=' + page;
+  
+    let url;
+    if (step === 'releases') {
+      url = 'http://gpp.ppda.go.ug/api/v1/releases?page=' + page;
+    } else {
+      url = 'http://gpp.ppda.go.ug/api/v1/releases?tag=' + step + '&page=' + page;
+    }
     return ajaxUtils.get(url, {});
     
   }
@@ -54,7 +60,8 @@ class ScrappingService {
   
   static run() {
     this.cleanup();
-    // this.fetch('procurements');
+    
+    this.fetch('releases');
     
     this.fetch('planning');
     this.fetch('tender');
@@ -63,12 +70,12 @@ class ScrappingService {
   }
   
   static cleanup() {
+    dbUtils.deleteAll('releases');
+    
     dbUtils.deleteAll('planning');
     dbUtils.deleteAll('tender');
     dbUtils.deleteAll('award');
     dbUtils.deleteAll('contract');
-    
-    // dbUtils.deleteAll('procurements');
     
     dbUtils.deleteAll('errors');
   }

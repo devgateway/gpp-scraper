@@ -8,8 +8,9 @@ Utils.loadExternalConfiguration().then(function (data) {
   
   console.log(global.config);
   
-  ScrappingService.run();
-  // ProcessingService.run();
+  // un comment this to re-run the import (!warning! this will delete all the existing data)
+  // ScrappingService.run();
+  ProcessingService.run();
 }).catch(function (error) {
   console.log(error);
 });
