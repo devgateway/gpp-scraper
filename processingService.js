@@ -83,6 +83,9 @@ class ProcessingService {
                 
                 // save the complete releases in a new collection
                 dbUtils.insertMany('complete_releases', [...releases.values()]);
+                
+                // create organization collection
+                Utils.createOrgs([...releases.values()]);
               });
             });
           });
