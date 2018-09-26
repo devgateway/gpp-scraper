@@ -73,6 +73,9 @@ class ProcessingService {
                     if (contract !== undefined) {
                       release.contracts = contract.contracts;
                     }
+                    
+                    // transform dates form Strings to Date objects
+                    Utils.prepareData(release, null);
                   } else {
                     console.log('Something wrong happened. We didn\'t found a release for OCID: ' + ocid);
                   }

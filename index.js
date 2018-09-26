@@ -1,7 +1,6 @@
-var {Utils} = require('./common/utils');
-var {ScrappingService} = require('./scrappingService');
-var {ProcessingService} = require('./processingService');
-
+const {Utils} = require('./common/utils');
+const {ScrappingService} = require('./scrappingService');
+const {ProcessingService} = require('./processingService');
 
 Utils.loadExternalConfiguration().then(function (data) {
   global.config = data;
