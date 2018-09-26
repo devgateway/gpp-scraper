@@ -16,6 +16,7 @@ class dbUtils {
     catch (err) {
       console.log(err.stack);
     }
+    
     client.close();
   }
   
@@ -31,6 +32,7 @@ class dbUtils {
     catch (err) {
       console.log(err.stack);
     }
+    
     client.close();
   }
   
@@ -45,15 +47,33 @@ class dbUtils {
         let docs = result.map(function (ocid) {
           return {'ocid': ocid};
         });
-        
+  
         dbUtils.insertMany('ocids', docs);
       });
     }
     catch (err) {
       console.log(err.stack);
     }
-    client.close();
     
+    client.close();
+  }
+  
+  static async findAll(collectionName, callback) {
+    let client;
+    
+    client = await MongoClient.connect(this.url());
+    const db = client.db(global.config.MONGO_DB.dbName);
+    const collection = db.collection(collectionName);
+  
+    collection.find({}).toArray(function (err, result) {
+      if (err) {
+        throw err;
+      }
+      
+      client.close();
+      
+      callback(result);
+    });
   }
 }
 
