@@ -12,7 +12,7 @@ class ScrappingService {
     console.log('fetching ' + step + ', page ' + page);
   
     let url;
-    if (step === 'releases') {
+    if (step === 'notag') {
       url = 'http://gpp.ppda.go.ug/api/v1/releases?page=' + page;
     } else {
       url = 'http://gpp.ppda.go.ug/api/v1/releases?tag=' + step + '&page=' + page;
@@ -61,7 +61,7 @@ class ScrappingService {
   static run() {
     this.cleanup();
     
-    this.fetch('releases');
+    this.fetch('notag');
     
     this.fetch('planning');
     this.fetch('tender');
@@ -70,7 +70,7 @@ class ScrappingService {
   }
   
   static cleanup() {
-    dbUtils.deleteAll('releases');
+    dbUtils.deleteAll('notag');
     
     dbUtils.deleteAll('planning');
     dbUtils.deleteAll('tender');

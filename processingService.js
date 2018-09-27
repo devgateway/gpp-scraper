@@ -11,7 +11,7 @@ class ProcessingService {
     dbUtils.deleteAll('ocids');
     await Utils.sleep(3000);  // delay used to avoid multiple callbacks
     
-    dbUtils.collectDistinct('releases', 'ocid');
+    dbUtils.collectDistinct('notag', 'ocid');
     dbUtils.collectDistinct('planning', 'ocid');
     dbUtils.collectDistinct('tender', 'ocid');
     dbUtils.collectDistinct('award', 'ocid');
@@ -26,7 +26,7 @@ class ProcessingService {
       console.log('uniqueOCID: ' + uniqueOCID.length);
       
       // extract from all unique OCID relevant information
-      dbUtils.findAll('releases', function (results) {
+      dbUtils.findAll('notag', function (results) {
         const releases = new Map(results.map(item => [item.ocid, item]));
         
         dbUtils.findAll('planning', function (results) {
@@ -82,7 +82,7 @@ class ProcessingService {
                 }
                 
                 // save the complete releases in a new collection
-                dbUtils.insertMany('complete_releases', [...releases.values()]);
+                dbUtils.insertMany('release', [...releases.values()]);
                 
                 // create organization collection
                 Utils.createOrgs([...releases.values()]);
