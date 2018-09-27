@@ -36,10 +36,14 @@ class Utils {
           Utils.prepareData(arrayElement, element);
         });
       } else if (typeof obj[element] === "object") {
-        if (element === "identifier") {
-          obj["_id"] = obj[element].id;
+        if (obj[element] != null) {
+          if (element === "identifier") {
+            obj["_id"] = obj[element].id;
+          }
+          Utils.prepareData(obj[element], element);
+        } else {
+          delete obj[element];
         }
-        Utils.prepareData(obj[element], element);
       } else if (element.toLowerCase().includes("date")) {
         obj[element] = new Date(obj[element]);
       } else if (element === "id") {
