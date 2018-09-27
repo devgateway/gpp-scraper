@@ -53,46 +53,46 @@ class Utils {
     });
   }
   
-  static createOrgs(releases) {
-    dbUtils.getDB(function (db) {
-      const organization = db.collection('organization');
-      organization.createIndex({"name": 1}, {unique: true});
-      organization.createIndex({"additionalIdentifiers._id": 1});
+  static async createOrgs(releases) {
+    const {client, db} = await dbUtils.getDB();
   
-      for (let release of releases) {
-        Utils.createOrgsFromRelease(release, db);
-      }
-    });
+    const organization = db.collection('organization');
+    organization.createIndex({"name": 1}, {unique: true});
+    organization.createIndex({"additionalIdentifiers._id": 1});
+  
+    for (let release of releases) {
+      await Utils.createOrgsFromRelease(release, db);
+    }
+    
+    client.close();
   }
   
-  static createOrgsFromRelease(release, db) {
+  static async createOrgsFromRelease(release, db) {
     if (release.tender != null) {
       if (release.tender.procuringEntity != null) {
-        Utils.createOrgFromField(release.tender.procuringEntity, "procuringEntity", db);
+        await Utils.createOrgFromField(release.tender.procuringEntity, "procuringEntity", db);
       }
       if (release.buyer != null) {
-        Utils.createOrgFromField(release.buyer, "buyer", db);
+        await Utils.createOrgFromField(release.buyer, "buyer", db);
       }
       if (release.tender.tenderers != null) {
-        release.tender.tenderers.forEach(t => Utils.createOrgFromField(t, "bidder", db));
+        await release.tender.tenderers.forEach(t => Utils.createOrgFromField(t, "bidder", db));
       }
     }
     if (release.bids != null && release.bids.details != null && release.bids.details.tenderers != null) {
-      release.bids.details.tenderers.forEach(t => Utils.createOrgFromField(t, "bidder", db));
+      await release.bids.details.tenderers.forEach(t => Utils.createOrgFromField(t, "bidder", db));
     }
     if (release.awards != null) {
-      release.awards.forEach(award => award.suppliers.forEach(s => Utils.createOrgFromField(s, "supplier", db)));
+      await release.awards.forEach(award => award.suppliers.forEach(s => Utils.createOrgFromField(s, "supplier", db)));
     }
   }
   
-  static createOrgFromField(orgField, fieldType, db) {
-    let org = Utils.findOrgInCollection(orgField, db);
-  
-    console.log(org);
+  static async createOrgFromField(orgField, fieldType, db) {
+    let org = await Utils.findOrgInCollection(orgField, db);
     
     if (org != null) {
       if (orgField.name != null && orgField.name === org.name) {
-        db.collection('organization').updateOne({
+        await db.collection('organization').updateOne({
           name: org.name
         }, {
           $addToSet: {
@@ -101,7 +101,7 @@ class Utils {
           }
         });
       } else {
-        db.collection('organization').updateOne({
+        await db.collection('organization').updateOne({
           _id: org._id
         }, {
           $addToSet: {
@@ -118,22 +118,25 @@ class Utils {
       } else {
         org._id = orgField._id;
       }
+      if (org.name == null) {
+        org.name = orgField._id;
+      }
       if (org.roles == null) {
         org.roles = [];
       }
       if (!org.roles.includes(fieldType)) {
         org.roles.push(fieldType);
       }
-  
-      console.log(">>>> inserted organization!");
-      db.collection('organization').insertOne(org);
+      
+      await db.collection('organization').insertOne(org);
     }
   }
   
-  static findOrgInCollection(orgField, db) {
+  static async findOrgInCollection(orgField, db) {
     let org;
+    
     if (orgField.name != null && orgField._id != null) {
-      org = db.collection('organization').findOne({
+      org = await db.collection('organization').findOne({
         $or: [
           {
             _id: orgField._id
@@ -146,9 +149,9 @@ class Utils {
       });
     } else {
       if (orgField.name != null) {
-        org = db.collection('organization').findOne({name: orgField.name});
+        org = await db.collection('organization').findOne({name: orgField.name});
       } else {
-        org = db.collection('organization').findOne({
+        org = await db.collection('organization').findOne({
           $or: [
             {
               _id: orgField._id
@@ -159,6 +162,7 @@ class Utils {
         });
       }
     }
+    
     return org;
   }
 }

@@ -5,11 +5,11 @@ class dbUtils {
     return 'mongodb://' + global.config.MONGO_DB.host + ':' + global.config.MONGO_DB.port;
   }
   
-  static getDB(callback) {
-    MongoClient.connect(this.url(), function(err, client) {
-      const db = client.db(global.config.MONGO_DB.dbName);
-      callback(db);
-    });
+  static async getDB() {
+    const client = await MongoClient.connect(this.url());
+    const db = await client.db(global.config.MONGO_DB.dbName);
+    
+    return {client, db};
   }
   
   static async insertMany(collectionName, data) {
