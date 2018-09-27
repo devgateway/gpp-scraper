@@ -5,6 +5,13 @@ class dbUtils {
     return 'mongodb://' + global.config.MONGO_DB.host + ':' + global.config.MONGO_DB.port;
   }
   
+  static async getDB() {
+    const client = await MongoClient.connect(this.url());
+    const db = await client.db(global.config.MONGO_DB.dbName);
+    
+    return {client, db};
+  }
+  
   static async insertMany(collectionName, data) {
     let client;
     try {
@@ -59,9 +66,7 @@ class dbUtils {
   }
   
   static async findAll(collectionName, callback) {
-    let client;
-    
-    client = await MongoClient.connect(this.url());
+    let client = await MongoClient.connect(this.url());
     const db = client.db(global.config.MONGO_DB.dbName);
     const collection = db.collection(collectionName);
   
